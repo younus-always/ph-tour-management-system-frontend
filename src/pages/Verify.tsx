@@ -11,6 +11,8 @@ import { useLocation, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import formatResendOtpTime from "@/utils/formatTime";
+
 
 const formSchema = z.object({
       pin: z.string().min(6, {
@@ -23,9 +25,15 @@ const Verify = () => {
       const navigate = useNavigate();
       const [email] = useState(location.state);
       const [confirmed, setConfirmed] = useState(false);
-      const [timer, setTimer] = useState(5);
+      const [timer, setTimer] = useState(120);
       const [sendOtp] = useSendOtpMutation();
       const [verifyOtp] = useVerifyOtpMutation();
+
+      useEffect(() => {
+            if (!email) {
+                  navigate("/");
+            }
+      }, [email]);
 
       const form = useForm<z.infer<typeof formSchema>>({
             resolver: zodResolver(formSchema),
@@ -34,11 +42,15 @@ const Verify = () => {
             }
       });
 
+
       useEffect(() => {
-            if (!email) {
-                  navigate("/");
-            }
-      }, [email]);
+            if (!email && !confirmed) return;
+
+            const timerId = setInterval(() => {
+                  setTimer((prev) => prev > 0 ? prev - 1 : 0)
+            }, 1000);
+            return () => clearInterval(timerId);
+      }, [email, confirmed])
 
       const handleSendOtp = async () => {
             const toastId = toast.loading("Sending OTP")
@@ -46,7 +58,8 @@ const Verify = () => {
                   const res = await sendOtp({ email }).unwrap();
                   if (res.success) {
                         toast.success("OTP Sent", { id: toastId })
-                        setConfirmed(true);
+                        setConfirmed(true)
+                        setTimer(120)
                   }
             } catch (err) {
                   console.log(err);
@@ -128,9 +141,9 @@ const Verify = () => {
                                                                                     "text-gray-500": timer !== 0,
                                                                               })}
                                                                         >
-                                                                              Resent OPT:{" "}
+                                                                              Resent OTP:{" "}
                                                                         </Button>{" "}
-                                                                        {timer}
+                                                                        {formatResendOtpTime(timer)}
                                                                   </FormDescription>
                                                                   <FormMessage />
                                                             </FormItem>
