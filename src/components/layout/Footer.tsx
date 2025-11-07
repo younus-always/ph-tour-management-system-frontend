@@ -1,4 +1,5 @@
-import Logo from "@/assets/icons/Logo";
+import Logo from "@/assets/icons/logo.png";
+import { Link } from "react-router";
 
 const Footer = () => {
       return (
@@ -7,7 +8,9 @@ const Footer = () => {
                         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                               <div>
                                     <div className="flex items-center gap-3">
-                                          <Logo />
+                                          <Link to="/">
+                                                <img src={Logo} alt="logo" className="w-12 h-12" />
+                                          </Link>
                                     </div>
 
                                     <p className="mt-4 max-w-xs text-muted-foreground">
@@ -18,7 +21,7 @@ const Footer = () => {
                                     <ul className="mt-8 flex gap-6">
                                           <li>
                                                 <a
-                                                      href="#"
+                                                      href="https://facebook.com/younus.always"
                                                       rel="noreferrer"
                                                       target="_blank"
                                                       className="text-foreground/80 transition hover:text-foreground"
@@ -42,7 +45,7 @@ const Footer = () => {
 
                                           <li>
                                                 <a
-                                                      href="#"
+                                                      href="https://instagram.com"
                                                       rel="noreferrer"
                                                       target="_blank"
                                                       className="text-foreground/80 transition hover:text-foreground"
@@ -66,7 +69,7 @@ const Footer = () => {
 
                                           <li>
                                                 <a
-                                                      href="#"
+                                                      href="https://x.com/younus_always"
                                                       rel="noreferrer"
                                                       target="_blank"
                                                       className="text-foreground/80 transition hover:text-foreground"
@@ -86,7 +89,7 @@ const Footer = () => {
 
                                           <li>
                                                 <a
-                                                      href="#"
+                                                      href="https://github.com/younus-always"
                                                       rel="noreferrer"
                                                       target="_blank"
                                                       className="text-foreground/80 transition hover:text-foreground"
@@ -110,7 +113,7 @@ const Footer = () => {
 
                                           <li>
                                                 <a
-                                                      href="#"
+                                                      href="https://dribbble.com"
                                                       rel="noreferrer"
                                                       target="_blank"
                                                       className="text-foreground/80 transition hover:text-foreground"

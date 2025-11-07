@@ -41,27 +41,24 @@ const RegisterForm = ({
       const onSubmit = async (data: z.infer<typeof registerSchema>) => {
             console.log(data);
             try {
-                  const userPayload = {
+                  const payload = {
                         name: data.name,
                         email: data.email,
                         password: data.password
                   };
-                  const res = await register(userPayload).unwrap();
-                  console.log(res);
-                  if (res.data.success) {
-                        toast.success(res.data.message)
-                        navigate("/verify")
+                  const res = await register(payload).unwrap();
+                  if (res.success) {
+                        toast.success("Account created successfully")
+                        navigate("/login")
                   }
-                  if (res.error.data.message.length > 0) {
-                        toast.error(res.error?.data?.message)
-                  }
-            } catch (err:any) {
+            } catch (err: any) {
                   console.log(err);
                   if (err.data.message == "User Account is not Verified") {
                         toast.error("Your account is not verified")
                         navigate("/verify")
+                        return
                   }
-                  if (err.data.message.length > 0) {
+                  if (err.data?.message?.length > 0) {
                         toast.error(err.data.message)
                   };
             }

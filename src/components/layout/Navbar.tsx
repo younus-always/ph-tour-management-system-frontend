@@ -1,4 +1,4 @@
-import Logo from "@/assets/icons/Logo"
+import Logo from "@/assets/icons/logo.png"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -13,6 +13,18 @@ import {
 } from "@/components/ui/popover"
 import { ModeToggle } from "./ModeToggler"
 import { Link } from "react-router"
+import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api"
+import { Avatar, AvatarImage } from "../ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAppDispatch } from "@/redux/hook"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -21,9 +33,19 @@ const navigationLinks = [
 ]
 
 export default function Navbar() {
+  const { data } = useUserInfoQuery(undefined);
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
+  const { email, name, picture } = data?.data || {};
+
+  const handleLogout = async () => {
+    await logout(undefined)
+    dispatch(authApi.util.resetApiState())
+  };
+
   return (
     <header className="border-b">
-      <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
+      <div className="container mx-auto px-4 flex h-18 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-2">
           {/* Mobile menu trigger */}
@@ -78,8 +100,8 @@ export default function Navbar() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-primary hover:text-primary/90">
-              <Logo />
+            <Link to="/">
+              <img src={Logo} alt="logo" className="w-12 h-12" />
             </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
@@ -100,9 +122,30 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <Button asChild className="text-sm">
+          {/* {data?.data?.email && <Button asChild variant="secondary" className="text-sm">
+            <Link to="/logout">Logout</Link>
+          </Button>}*/}
+          {!email && <Button asChild className="text-sm">
             <Link to="/login">Login</Link>
-          </Button>
+          </Button>}
+
+          {email && <div className="space-y-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar>
+                  <AvatarImage src={picture || "https://github.com/shadcn.png"} alt={name + "photo"} />
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 mr-2 mt-2" align="start">
+                <DropdownMenuLabel>{name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                  Logout
+                  <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>}
         </div>
       </div>
     </header >

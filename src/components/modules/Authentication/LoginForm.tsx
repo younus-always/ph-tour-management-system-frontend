@@ -7,6 +7,7 @@ import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form"
 import Password from "@/components/ui/password"
 import { useLoginMutation } from "@/redux/features/auth/auth.api"
 import { toast } from "sonner"
+import config from "@/config"
 
 const LoginForm = ({
       className,
@@ -18,23 +19,27 @@ const LoginForm = ({
 
       const onSubmit: SubmitHandler<FieldValues> = async (data) => {
             try {
-                  const res = await login(data).unwrap();
-                  console.log(res);
-                  if (res.error?.data?.message.length > 0) {
-                        return toast.error(res.error?.data?.message)
-                  };
-                  if (res.data) {
-                        toast.success(res.data.message)
+                  const payload = {
+                        email: data.email,
+                        password: data.password,
                   }
+                  const res = await login(payload).unwrap();
+                  if (res.success) {
+                        toast.success("Logged in successfully")
+                        navigate("/")
+                  };
             } catch (err: any) {
                   console.log(err);
-                  if (err.data.message == "User Account is not Verified") {
+                  const errMsg = err.data.message;
+                  if (errMsg == "User Account is not Verified") {
                         toast.error("Your account is not verified")
                         navigate("/verify", { state: data.email })
+                        return
                   }
-                  if (err.data.message.length > 0) {
-                        toast.error(err.data.message)
-                  };
+                  if (errMsg === "Password does not match."
+                  ) {
+                        toast.error("Invalid email or password")
+                  }
             }
       }
 
@@ -93,7 +98,8 @@ const LoginForm = ({
                               </span>
                         </div>
 
-                        <Button variant="outline" type="button" className="cursor-pointer">
+                        <Button variant="outline" type="button"
+                              onClick={() => window.open(`${config.baseUrl}/auth/google`)} className="cursor-pointer">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24" className="mt-0.5" aria-hidden="true" focusable="false">
                                     <path fill="#4285F4" d="M24 9.5c3.9 0 7 1.5 9.2 3.6l6.9-6.9C36.9 3.1 30.9 1 24 1 14 1 5.7 6.6 2.8 14.9l7.8 6C12.2 16 17.5 9.5 24 9.5z" />
                                     <path fill="#34A853" d="M46.5 24.1c0-1.6-.1-2.8-.4-4H24v8.1h12.7c-.5 2.9-2.1 5.3-4.6 6.9l7 5.4C43 36.6 46.5 30.8 46.5 24.1z" />
