@@ -1,4 +1,4 @@
-import Logo from "@/assets/icons/Logo"
+import Logo from "@/assets/icons/logo.png"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -23,7 +23,7 @@ const navigationLinks = [
 export default function Navbar() {
   return (
     <header className="border-b">
-      <div className="container mx-auto px-4 flex h-16 items-center justify-between gap-4">
+      <div className="container mx-auto px-4 flex h-18 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-2">
           {/* Mobile menu trigger */}
@@ -78,8 +78,8 @@ export default function Navbar() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link to="/" className="text-primary hover:text-primary/90">
-              <Logo />
+            <Link to="/">
+              <img src={Logo} alt="logo"  className="w-12 h-12"/>
             </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">

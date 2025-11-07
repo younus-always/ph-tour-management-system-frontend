@@ -18,21 +18,23 @@ const LoginForm = ({
 
       const onSubmit: SubmitHandler<FieldValues> = async (data) => {
             try {
-                  const res = await login(data).unwrap();
-                  console.log(res);
-                  if (res.error?.data?.message.length > 0) {
-                        return toast.error(res.error?.data?.message)
-                  };
-                  if (res.data) {
-                        toast.success(res.data.message)
+                  const payload = {
+                        email: data.email,
+                        password: data.password,
                   }
+                  const res = await login(payload).unwrap();
+                  if (res.success) {
+                        toast.success("Logged in successful")
+                        navigate("/")
+                  };
             } catch (err: any) {
                   console.log(err);
-                  if (err.data.message == "User Account is not Verified") {
+                  if (err.data?.message == "User Account is not Verified") {
                         toast.error("Your account is not verified")
                         navigate("/verify", { state: data.email })
+                        return
                   }
-                  if (err.data.message.length > 0) {
+                  if (err.data?.message?.length > 0) {
                         toast.error(err.data.message)
                   };
             }

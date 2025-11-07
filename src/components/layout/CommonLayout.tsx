@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
+import ScrollToTop from "../modules/ScrollToTop"
 
 interface IProps {
       children: ReactNode
@@ -12,6 +13,7 @@ const CommonLayout = ({ children }: IProps) => {
                   <Navbar />
                   <div className="grow">{children}</div>
                   <Footer />
+                  <ScrollToTop />
             </div>
       )
 }
