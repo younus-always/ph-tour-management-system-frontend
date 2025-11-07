@@ -2,18 +2,40 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
-import { useForm } from "react-hook-form"
-import Password from "@/components/ui/Password"
+import { Link, useNavigate } from "react-router"
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form"
+import Password from "@/components/ui/password"
+import { useLoginMutation } from "@/redux/features/auth/auth.api"
+import { toast } from "sonner"
 
 const LoginForm = ({
       className,
       ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
       const form = useForm();
+      const [login] = useLoginMutation();
+      const navigate = useNavigate();
 
-      const onSubmit = (data) => {
-            console.log(data);
+      const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+            try {
+                  const res = await login(data).unwrap();
+                  console.log(res);
+                  if (res.error?.data?.message.length > 0) {
+                        return toast.error(res.error?.data?.message)
+                  };
+                  if (res.data) {
+                        toast.success(res.data.message)
+                  }
+            } catch (err: any) {
+                  console.log(err);
+                  if (err.data.message == "User Account is not Verified") {
+                        toast.error("Your account is not verified")
+                        navigate("/verify", { state: data.email })
+                  }
+                  if (err.data.message.length > 0) {
+                        toast.error(err.data.message)
+                  };
+            }
       }
 
 
@@ -31,6 +53,7 @@ const LoginForm = ({
                                     <FormField
                                           control={form.control}
                                           name="email"
+                                          rules={{ required: true }}
                                           render={({ field }) => (
                                                 <FormItem>
                                                       <FormLabel>Email</FormLabel>
@@ -49,6 +72,7 @@ const LoginForm = ({
                                     <FormField
                                           control={form.control}
                                           name="password"
+                                          rules={{ required: true }}
                                           render={({ field }) => (
                                                 <FormItem>
                                                       <FormLabel>Password</FormLabel>

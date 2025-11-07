@@ -2,12 +2,14 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import type React from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Password from "@/components/ui/Password"
+import Password from "@/components/ui/password"
+import { useRegisterMutation } from "@/redux/features/auth/auth.api"
+import { toast } from "sonner"
 
 const registerSchema = z.object({
       name: z.string().min(3, { error: "Name is too short!" }).max(40),
@@ -23,6 +25,9 @@ const RegisterForm = ({
       className,
       ...props
 }: React.HtmlHTMLAttributes<HTMLDivElement>) => {
+      const [register] = useRegisterMutation();
+      const navigate = useNavigate();
+
       const form = useForm<z.infer<typeof registerSchema>>({
             resolver: zodResolver(registerSchema),
             defaultValues: {
@@ -36,14 +41,29 @@ const RegisterForm = ({
       const onSubmit = async (data: z.infer<typeof registerSchema>) => {
             console.log(data);
             try {
-                  const userInfo = {
+                  const userPayload = {
                         name: data.name,
                         email: data.email,
                         password: data.password
                   };
-                  console.log(userInfo);
-            } catch (error) {
-                  console.log(error);
+                  const res = await register(userPayload).unwrap();
+                  console.log(res);
+                  if (res.data.success) {
+                        toast.success(res.data.message)
+                        navigate("/verify")
+                  }
+                  if (res.error.data.message.length > 0) {
+                        toast.error(res.error?.data?.message)
+                  }
+            } catch (err:any) {
+                  console.log(err);
+                  if (err.data.message == "User Account is not Verified") {
+                        toast.error("Your account is not verified")
+                        navigate("/verify")
+                  }
+                  if (err.data.message.length > 0) {
+                        toast.error(err.data.message)
+                  };
             }
       }
 
