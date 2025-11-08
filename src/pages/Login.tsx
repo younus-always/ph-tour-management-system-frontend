@@ -1,14 +1,16 @@
 import Logo from "@/assets/icons/Logo"
 import LoginForm from '@/components/modules/Authentication/LoginForm'
 import TravelLogin from "@/assets/images/travel-login.jpg"
-import {  useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api"
 import { useEffect } from "react"
 
 
 const Login = () => {
       const { data } = useUserInfoQuery(undefined);
+      const location = useLocation();
       const navigate = useNavigate();
+      console.log(location);
 
       useEffect(() => {
             if (data?.data?.email) {
@@ -20,7 +22,7 @@ const Login = () => {
             <div className="grid min-h-svh lg:grid-cols-2">
                   <div className="flex flex-col gap-4 p-6 md:p-10">
                         <div className="flex justify-center gap-2 md:justify-start">
-                             <Logo/>
+                              <Logo />
                         </div>
                         <div className="flex flex-1 items-center justify-center">
                               <div className="w-full max-w-xs">

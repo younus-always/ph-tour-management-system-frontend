@@ -13,11 +13,11 @@ export const userSidebarItems = [
             ],
       },
       {
-            title: "Tour Management",
+            title: "Tour",
             items: [
                   {
-                        title: "Add Tour",
-                        url: "/user/add-tour",
+                        title: "My Tour",
+                        url: "/user/tour",
                         component: AddTour
                   },
             ],
