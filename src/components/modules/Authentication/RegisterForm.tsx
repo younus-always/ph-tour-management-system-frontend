@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import Password from "@/components/ui/password"
 import { useRegisterMutation } from "@/redux/features/auth/auth.api"
 import { toast } from "sonner"
+import { continueWithGoogle } from "@/utils/continueWithGoogle"
+
 
 const registerSchema = z.object({
       name: z.string().min(3, { error: "Name is too short!" }).max(40),
@@ -156,7 +158,7 @@ const RegisterForm = ({
                         <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
                   </div>
 
-                  <Button variant="outline" type="button" className="cursor-pointer">
+                  <Button onClick={continueWithGoogle} variant="outline" type="button" className="cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24" height="24" className="mt-0.5" aria-hidden="true" focusable="false">
                               <path fill="#4285F4" d="M24 9.5c3.9 0 7 1.5 9.2 3.6l6.9-6.9C36.9 3.1 30.9 1 24 1 14 1 5.7 6.6 2.8 14.9l7.8 6C12.2 16 17.5 9.5 24 9.5z" />
                               <path fill="#34A853" d="M46.5 24.1c0-1.6-.1-2.8-.4-4H24v8.1h12.7c-.5 2.9-2.1 5.3-4.6 6.9l7 5.4C43 36.6 46.5 30.8 46.5 24.1z" />

@@ -1,5 +1,4 @@
-import Logo from "@/assets/icons/logo.png";
-import { Link } from "react-router";
+import Logo from "@/assets/icons/Logo";
 
 const Footer = () => {
       return (
@@ -8,9 +7,7 @@ const Footer = () => {
                         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                               <div>
                                     <div className="flex items-center gap-3">
-                                          <Link to="/">
-                                                <img src={Logo} alt="logo" className="w-12 h-12" />
-                                          </Link>
+                                          <Logo />
                                     </div>
 
                                     <p className="mt-4 max-w-xs text-muted-foreground">

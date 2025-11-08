@@ -29,6 +29,7 @@ const Verify = () => {
       const [sendOtp] = useSendOtpMutation();
       const [verifyOtp] = useVerifyOtpMutation();
 
+      // redirect to "/" if email = false
       useEffect(() => {
             if (!email) {
                   navigate("/");
@@ -42,7 +43,6 @@ const Verify = () => {
             }
       });
 
-
       useEffect(() => {
             if (!email && !confirmed) return;
 
@@ -52,20 +52,29 @@ const Verify = () => {
             return () => clearInterval(timerId);
       }, [email, confirmed])
 
+      // send otp to the gmail
       const handleSendOtp = async () => {
-            const toastId = toast.loading("Sending OTP")
+            const toastId = toast.loading("Sending OTP...")
             try {
                   const res = await sendOtp({ email }).unwrap();
+                  console.log(res);
+                  toast.dismiss(toastId);  // stop loading toast
+
                   if (res.success) {
-                        toast.success("OTP Sent", { id: toastId })
+                        toast.success(res.message)
                         setConfirmed(true)
                         setTimer(120)
+                  } else {
+                        toast.error(res.message);
                   }
-            } catch (err) {
-                  console.log(err);
+            } catch (err: any) {
+                  toast.dismiss(toastId);
+                  const errMsg = err?.data?.message || "Failed to send OTP";
+                  toast.error(errMsg);
             }
       };
 
+      // verify otp
       const onSubmit = async (data: z.infer<typeof formSchema>) => {
             const toastId = toast.loading("Verifying OTP")
             try {
@@ -75,12 +84,17 @@ const Verify = () => {
                         otp: data.pin
                   }
                   const res = await verifyOtp(payload).unwrap();
+                  console.log(res);
                   if (res.success) {
-                        toast.success("OTP Verified", { id: toastId });
+                        toast.success(res.message, { id: toastId });
                         navigate("/login")
+                  } else {
+                        toast.error("Verification failed", { id: toastId });
                   }
-            } catch (error) {
-                  console.log(error);
+            } catch (err: any) {
+                  console.log(err);
+                  const errMsg = err?.data?.message || "Something went wrong";
+                  toast.error(errMsg, { id: toastId })
             }
       };
 
@@ -153,7 +167,7 @@ const Verify = () => {
                                     </Form>
                               </CardContent>
                               <CardFooter className="flex justify-end">
-                                    <Button form="otp-form" type="submit">
+                                    <Button form="otp-form" type="submit" className="cursor-pointer">
                                           Submit
                                     </Button>
                               </CardFooter>
@@ -163,7 +177,7 @@ const Verify = () => {
                               <CardHeader>
                                     <CardTitle className="text-xl text-center">Verify your email address</CardTitle>
                                     <CardDescription className="text-center">
-                                          We will send you an OTP at <br /> {email}
+                                          We will send you an OTP at <br /> 👉 {email}
                                     </CardDescription>
                               </CardHeader>
                               <CardFooter className="flex justify-end">

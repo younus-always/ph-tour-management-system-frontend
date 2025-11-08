@@ -1,9 +1,20 @@
 import RegisterForm from '@/components/modules/Authentication/RegisterForm'
 import TravelRegister from "@/assets/images/travel-register.jpg"
-import { Link } from 'react-router'
-import Logo from "@/assets/icons/logo.png"
+import { useNavigate } from 'react-router'
+import Logo from "@/assets/icons/Logo"
+import { useUserInfoQuery } from '@/redux/features/auth/auth.api'
+import { useEffect } from 'react'
 
 const Register = () => {
+      const { data } = useUserInfoQuery(undefined);
+      const navigate = useNavigate();
+
+      useEffect(() => {
+            if (data?.data?.email) {
+                  navigate("/");
+            }
+      }, [data?.data?.email]);
+
       return (
             <div className="grid min-h-svh lg:grid-cols-2">
                   <div className="bg-muted relative hidden lg:block">
@@ -15,9 +26,7 @@ const Register = () => {
                   </div>
                   <div className="flex flex-col gap-4 p-6 md:p-10">
                         <div className="flex justify-center gap-2 md:justify-start">
-                              <Link to={'/'}>
-                                    <img src={Logo} alt="logo" className="w-12 h-12" />
-                              </Link>
+                              <Logo />
                         </div>
                         <div className="flex flex-1 items-center justify-center">
                               <div className="w-full max-w-xs">
