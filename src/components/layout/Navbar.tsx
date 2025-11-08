@@ -1,4 +1,4 @@
-import Logo from "@/assets/icons/logo.png"
+import Logo from "@/assets/icons/Logo"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -25,18 +25,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAppDispatch } from "@/redux/hook"
+import { AvatarFallback } from "@radix-ui/react-avatar"
+import { role } from "@/constants/role"
+import { ArrowRight } from "lucide-react"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home", },
-  { href: "/about", label: "About" }
+  { href: "/", label: "Home", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/admin", label: "Dashboard", role: role.superAdmin },
+  { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/user", labe: "Dashboard", role: role.user }
 ]
 
 export default function Navbar() {
   const { data } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-  const { email, name, picture } = data?.data || {};
+  const { email, name, picture, role: userRole } = data?.data || {};
+  console.log(data);
 
   const handleLogout = async () => {
     await logout(undefined)
@@ -87,12 +94,24 @@ export default function Navbar() {
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5"
-                      >
-                        <Link to={link.href}>{link.label}</Link>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
+                    <>
+                      {link.role === "PUBLIC" &&
+                        <NavigationMenuItem key={index} className="w-full">
+                          <NavigationMenuLink asChild className="py-1.5"
+                          >
+                            <Link to={link.href}>{link.label}</Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      }
+                      {link.role === userRole &&
+                        <NavigationMenuItem key={index} className="w-full">
+                          <NavigationMenuLink asChild className="py-1.5"
+                          >
+                            <Link to={link.href}>{link.label}</Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      }
+                    </>
                   ))}
                 </NavigationMenuList>
               </NavigationMenu>
@@ -100,20 +119,29 @@ export default function Navbar() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link to="/">
-              <img src={Logo} alt="logo" className="w-12 h-12" />
-            </Link>
+            <Logo />
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink asChild
-                      className="py-1.5 font-medium text-muted-foreground hover:text-primary"
-                    >
-                      <Link to={link.href}>{link.label}</Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
+                  <>
+                    {link.role === "PUBLIC" &&
+                      <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuLink asChild className="py-1.5"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    }
+                    {link.role === userRole &&
+                      <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuLink asChild className="py-1.5"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    }
+                  </>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
@@ -132,16 +160,23 @@ export default function Navbar() {
           {email && <div className="space-y-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar>
-                  <AvatarImage src={picture || "https://github.com/shadcn.png"} alt={name + "photo"} />
+                <Avatar className="ring ring-transparent w-9 h-9 ring-offset-[3px] ring-offset-sidebar-ring">
+                  <AvatarImage src={picture ? picture : "https://github.com/shadcn.png"} alt={"photo"} />
+                  <AvatarFallback><span className="text-sm">profile</span></AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 mr-2 mt-2" align="start">
                 <DropdownMenuLabel>{name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <Link to={role.user === userRole ? "/user" : "/admin"}>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Dashboard
+                  </DropdownMenuItem>
+                </Link>
+
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                   Logout
-                  <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                  <DropdownMenuShortcut><ArrowRight /></DropdownMenuShortcut>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
