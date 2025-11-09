@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form"
 import Password from "@/components/ui/password"
 import { useLoginMutation } from "@/redux/features/auth/auth.api"
@@ -17,6 +17,9 @@ const LoginForm = ({
       const form = useForm();
       const [login] = useLoginMutation();
       const navigate = useNavigate();
+      const location = useLocation();
+
+      console.log(location);
 
       const onSubmit: SubmitHandler<FieldValues> = async (data) => {
             try {
@@ -27,12 +30,11 @@ const LoginForm = ({
                   const res = await login(payload).unwrap();
                   if (res.success) {
                         toast.success("Logged in successfully")
-                        navigate("/")
+                        const redirectTo = location?.state || "/";
+                        navigate(redirectTo);
                   };
             } catch (err: any) {
-                  console.log(err);
                   const errMsg = err.data.message;
-                  console.log(errMsg);
                   if (errMsg.includes("authenticated through Google."))
                         return toast.warning(errMsg);
 
@@ -47,6 +49,7 @@ const LoginForm = ({
                         navigate("/verify", { state: data.email })
                         return
                   }
+                  toast.error(errMsg)
             }
       }
 
