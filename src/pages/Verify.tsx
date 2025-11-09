@@ -28,20 +28,19 @@ const Verify = () => {
       const [timer, setTimer] = useState(120);
       const [sendOtp] = useSendOtpMutation();
       const [verifyOtp] = useVerifyOtpMutation();
-
-      // redirect to "/" if email = false
-      useEffect(() => {
-            if (!email) {
-                  navigate("/");
-            }
-      }, [email]);
-
       const form = useForm<z.infer<typeof formSchema>>({
             resolver: zodResolver(formSchema),
             defaultValues: {
                   pin: "",
             }
       });
+
+      // redirect to "/" if email = false
+      useEffect(() => {
+            if (!email) {
+                  navigate("/");
+            }
+      }, [email, navigate]);
 
       useEffect(() => {
             if (!email && !confirmed) return;
@@ -57,15 +56,12 @@ const Verify = () => {
             const toastId = toast.loading("Sending OTP...")
             try {
                   const res = await sendOtp({ email }).unwrap();
-                  console.log(res);
                   toast.dismiss(toastId);  // stop loading toast
 
                   if (res.success) {
                         toast.success(res.message)
                         setConfirmed(true)
                         setTimer(120)
-                  } else {
-                        toast.error(res.message);
                   }
             } catch (err: any) {
                   toast.dismiss(toastId);
@@ -78,13 +74,12 @@ const Verify = () => {
       const onSubmit = async (data: z.infer<typeof formSchema>) => {
             const toastId = toast.loading("Verifying OTP")
             try {
-                  console.log(data);
                   const payload = {
                         email,
                         otp: data.pin
                   }
                   const res = await verifyOtp(payload).unwrap();
-                  console.log(res);
+
                   if (res.success) {
                         toast.success(res.message, { id: toastId });
                         navigate("/login")
@@ -92,7 +87,6 @@ const Verify = () => {
                         toast.error("Verification failed", { id: toastId });
                   }
             } catch (err: any) {
-                  console.log(err);
                   const errMsg = err?.data?.message || "Something went wrong";
                   toast.error(errMsg, { id: toastId })
             }

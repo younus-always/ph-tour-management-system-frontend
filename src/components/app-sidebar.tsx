@@ -9,24 +9,27 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Logo from "@/assets/icons/Logo"
 import { Link } from "react-router"
 import { getSidebarItems } from "@/utils/getSidebarItems"
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api"
+import { CircleChevronLeft } from "lucide-react"
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
-  console.log(userData?.data?.role);
+
   const data = {
     navMain: getSidebarItems(userData?.data?.role)
   };
 
   return (
     <Sidebar {...props}>
-      <div className="mt-3 ml-3">
+      <div className="flex items-center justify-between p-2">
         <Logo />
+        <SidebarTrigger icon={<CircleChevronLeft />} size={"lg"} className="" />
       </div>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}

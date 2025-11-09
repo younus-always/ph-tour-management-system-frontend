@@ -1,4 +1,5 @@
 import { AddTourTypeModal } from "@/components/modules/Admin/TourType/AddTourTypeModal";
+import { DeleteConfirmation } from "@/components/modules/DeleteConfirmation";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDeleteTourTypeMutation, useGetTourTypesQuery } from "@/redux/features/tour/tour.api"
@@ -8,15 +9,15 @@ import { toast } from "sonner";
 const AddTourType = () => {
       const { data } = useGetTourTypesQuery(undefined);
       const [deleteTourType] = useDeleteTourTypeMutation();
-      console.log(data);
 
-      const handleDelete = async (id: string) => {
+      const handleDeleteTourType = async (id: string) => {
+            const toastId = toast.loading("Deleting...")
             try {
                   const res = await deleteTourType(id).unwrap();
-                  console.log(res);
+                  toast.dismiss(toastId);
                   if (res.success) toast.success("Tour Type Deleted")
             } catch (err: any) {
-                  console.log(err);
+                  toast.dismiss(toastId);
                   toast.error(err.data.message)
             }
       };
@@ -41,7 +42,9 @@ const AddTourType = () => {
                                           <TableRow key={item._id}>
                                                 <TableCell className="font-medium">{item.name}</TableCell>
                                                 <TableCell className="text-right">
-                                                      <Button onClick={() => handleDelete(item._id)} type="button" size={"sm"} className="cursor-pointer"><Trash2 /></Button>
+                                                      <DeleteConfirmation onConfirm={() => handleDeleteTourType(item._id)}>
+                                                            <Button size="sm" className="cursor-pointer"><Trash2 /></Button>
+                                                      </DeleteConfirmation>
                                                 </TableCell>
                                           </TableRow>))}
                               </TableBody>

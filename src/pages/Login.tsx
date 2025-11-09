@@ -1,22 +1,27 @@
 import Logo from "@/assets/icons/Logo"
 import LoginForm from '@/components/modules/Authentication/LoginForm'
 import TravelLogin from "@/assets/images/travel-login.jpg"
-import { useLocation, useNavigate } from 'react-router'
-import { useUserInfoQuery } from "@/redux/features/auth/auth.api"
-import { useEffect } from "react"
-
+import { useNavigate, useLocation } from 'react-router';
+import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { useEffect } from "react";
 
 const Login = () => {
       const { data } = useUserInfoQuery(undefined);
-      const location = useLocation();
       const navigate = useNavigate();
-      console.log(location);
+      const location = useLocation();
+
 
       useEffect(() => {
             if (data?.data?.email) {
-                  navigate("/");
+                  // Only redirect if user manually opened /login
+                  if (!location?.state) {
+                        navigate("/");
+                  } else {
+                        navigate(location?.state)
+                  }
             }
-      }, [data?.data?.email]);
+      }, [data?.data?.email, location?.state, navigate]);
+
 
       return (
             <div className="grid min-h-svh lg:grid-cols-2">

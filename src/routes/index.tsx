@@ -26,13 +26,23 @@ export const router = createBrowserRouter([
       },
       {
             path: "/admin",
-            Component: withAuth(DashboardLayout, role.superAdmin as TRole),
-            children: [{ index: true, element: <Navigate to="/admin/analytics" /> }, ...generateRoutes(adminSidebarItems)]
+            Component: withAuth(DashboardLayout, [role.admin, role.superAdmin] as TRole[]),
+            children: [
+                  {
+                        index: true,
+                        element: <Navigate to="/admin/analytics" />
+                  },
+                  ...generateRoutes(adminSidebarItems)]
       },
       {
             path: "/user",
             Component: withAuth(DashboardLayout, role.user as TRole),
-            children: [{ index: true, element: <Navigate to="/user/bookings" /> }, ...generateRoutes(userSidebarItems)]
+            children: [
+                  {
+                        index: true,
+                        element: <Navigate to="/user/bookings" />
+                  },
+                  ...generateRoutes(userSidebarItems)]
       },
       {
             path: "/login",

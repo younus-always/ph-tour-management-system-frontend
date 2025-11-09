@@ -35,7 +35,7 @@ const navigationLinks = [
   { href: "/about", label: "About", role: "PUBLIC" },
   { href: "/admin", label: "Dashboard", role: role.superAdmin },
   { href: "/admin", label: "Dashboard", role: role.admin },
-  { href: "/user", labe: "Dashboard", role: role.user }
+  { href: "/user", label: "Dashboard", role: role.user }
 ]
 
 export default function Navbar() {
@@ -43,7 +43,6 @@ export default function Navbar() {
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
   const { email, name, picture, role: userRole } = data?.data || {};
-  console.log(data);
 
   const handleLogout = async () => {
     await logout(undefined)
