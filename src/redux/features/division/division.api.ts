@@ -24,12 +24,10 @@ export const divisionApi = baseApi.injectEndpoints({
                         method: "GET"
                   }),
                   providesTags: ["DIVISION"],
-                  transformResponse: (res) => {
-                        return {
-                              data: [...res.data],
-                              meta: res.meta
-                        }
-                  }
+                  transformResponse: (res) => ({
+                        data: [...res.data],
+                        meta: res.meta
+                  })
             }),
 
       })
