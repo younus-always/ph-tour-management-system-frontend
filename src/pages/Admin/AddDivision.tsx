@@ -1,10 +1,19 @@
 import AddDivisionModal from "@/components/modules/Admin/Division/AddDivisionModal";
+import DivisionDropdown from "@/components/modules/Admin/Division/DivisionDropdown";
 import { DeleteConfirmation } from "@/components/modules/DeleteConfirmation";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDeleteDivisionMutation, useGetDivisionsQuery } from "@/redux/features/division/division.api"
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Ellipsis, Pencil, Trash2 } from "lucide-react"
 
 
 const AddDivision = () => {
@@ -15,7 +24,7 @@ const AddDivision = () => {
     const toastId = toast.loading("Deleting...")
     try {
       const res = await deleteDivision(id).unwrap();
-  
+
       toast.dismiss(toastId);
       if (res.success) toast.success("Division Deleted")
     } catch (err: any) {
@@ -50,9 +59,41 @@ const AddDivision = () => {
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell className="font-medium">{item.description.length > 50 ? item.description.slice(0, 50) + "..." : item.description}</TableCell>
                 <TableCell className="text-right">
-                  <DeleteConfirmation onConfirm={() => handleDeleteDivision(item._id)}>
-                    <Button size="sm" className="cursor-pointer"><Trash2 /></Button>
-                  </DeleteConfirmation>
+                  {/* <DivisionDropdown division={item} onConfirm={() => handleDeleteDivision(item._id)} /> */}
+
+                  {/* Action Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" type="button" variant="outline" className="cursor-pointer">
+                        <Ellipsis />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40" align="end">
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                          <button className="w-full text-start cursor-pointer">View Detail</button>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <button
+                            className="w-full flex items-center justify-between cursor-pointer">
+                            Edit <Pencil color="orange" />
+                          </button>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <DeleteConfirmation onConfirm={() => handleDeleteDivision(item._id)}>
+                            <button onClick={(e) => e.stopPropagation()}
+                              className="w-full flex items-center justify-between cursor-pointer">
+                              Delete <Trash2 color="red" />
+                            </button>
+                          </DeleteConfirmation>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+
                 </TableCell>
               </TableRow>))}
           </TableBody>

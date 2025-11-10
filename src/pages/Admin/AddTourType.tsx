@@ -1,9 +1,7 @@
 import { AddTourTypeModal } from "@/components/modules/Admin/TourType/AddTourTypeModal";
-import { DeleteConfirmation } from "@/components/modules/DeleteConfirmation";
-import { Button } from "@/components/ui/button";
+import TourTypeDropdown from "@/components/modules/Admin/TourType/TourTypeDropdown";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDeleteTourTypeMutation, useGetTourTypesQuery } from "@/redux/features/tour/tour.api"
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 const AddTourType = () => {
@@ -41,10 +39,8 @@ const AddTourType = () => {
                                     {data?.data?.map((item) => (
                                           <TableRow key={item._id}>
                                                 <TableCell className="font-medium">{item.name}</TableCell>
-                                                <TableCell className="text-right">
-                                                      <DeleteConfirmation onConfirm={() => handleDeleteTourType(item._id)}>
-                                                            <Button size="sm" className="cursor-pointer"><Trash2 /></Button>
-                                                      </DeleteConfirmation>
+                                                <TableCell className="text-right space-x-1">
+                                                      <TourTypeDropdown onConfirm={() => handleDeleteTourType(item._id)} />
                                                 </TableCell>
                                           </TableRow>))}
                               </TableBody>

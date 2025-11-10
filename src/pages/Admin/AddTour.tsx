@@ -85,15 +85,14 @@ const AddTour = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "Cox's Bazar Beach Adventure",
-      description:
-        "Experience the world's longest natural sea beach with golden sandy shores, crystal clear waters, and breathtaking sunsets. Enjoy beach activities, local seafood, and explore nearby attractions including Himchari National Park and Inani Beach.",
-      location: "Cox's Bazar",
-      costFrom: "15000",
+      title: "",
+      description: "",
+      location: "",
+      costFrom: "",
       startDate: new Date(Date.now()),
       endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
-      departureLocation: "Dhaka",
-      arrivalLocation: "Cox's Bazar",
+      departureLocation: "",
+      arrivalLocation: "",
       included: [
         { value: "Accommodation for 2 nights" },
         { value: "All meals (breakfast, lunch, dinner)" },
@@ -116,8 +115,8 @@ const AddTour = () => {
         { value: "Day 2: Himchari National Park visit" },
         { value: "Day 3: Inani Beach and departure" },
       ],
-      maxGuest: "20",
-      minAge: "5",
+      maxGuest: "",
+      minAge: "",
       division: "",
       tourType: "",
     }
@@ -199,7 +198,7 @@ const AddTour = () => {
     const formData = new FormData();
     formData.append("data", JSON.stringify(tourData));
     images.forEach((image) => formData.append("files", image as File));
-    
+
     console.log(tourData);
     try {
       const res = await addTour(formData).unwrap();
@@ -239,7 +238,7 @@ const AddTour = () => {
                   <FormItem>
                     <FormLabel>Tour Title</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} placeholder="Cox's Bazar Beach Adventure" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -254,7 +253,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Location</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="Cox's Bazar" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -267,7 +266,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Cost</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="15000" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -283,7 +282,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Departure Location</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="Dhaka" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -296,7 +295,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Arrival Location</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="Cox's Bazar" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -318,7 +317,7 @@ const AddTour = () => {
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue />
+                            <SelectValue placeholder="Select Division" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -331,7 +330,6 @@ const AddTour = () => {
                           }
                         </SelectContent>
                       </Select>
-
                       <FormMessage />
                     </FormItem>
                   )}
@@ -349,7 +347,7 @@ const AddTour = () => {
                       >
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue />
+                            <SelectValue placeholder="Select Tour Type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -379,7 +377,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Max Guest</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="12" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -392,7 +390,7 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Minimum Age</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="5" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -499,30 +497,18 @@ const AddTour = () => {
                     <FormItem className="flex-1">
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} className="h-[205px]" />
+                        <Textarea {...field} className="h-[205px]" placeholder="Experience the world's longest natural sea beach with golden sandy shores, crystal clear waters, and breathtaking sunsets. Enjoy beach activities, local seafood, and explore nearby attractions including Himchari National Park and Inani Beach." />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {/* multiple image upload field */}
                 <div className="flex-1 mt-5">
                   <MultipleImageUploader onChange={setImages} />
                 </div>
               </div>
               <div className="border-t border-muted w-full "></div>
-              {/* multiple image upload field */}
-              <div className="flex justify-between">
-                <p className="font-semibold">Included</p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                // onClick={() => appendIncluded({ value: "" })}
-                >
-                  <Plus />
-                </Button>
-              </div>
-
               {/* included */}
               <div>
                 <div className="flex justify-between">

@@ -12,22 +12,29 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { useAddTourTypeMutation } from "@/redux/features/tour/tour.api";
 import { useState } from "react";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function AddTourTypeModal() {
   const [addTourType] = useAddTourTypeMutation();
   const [open, setOpen] = useState(false);
-  const form = useForm<{ name: string }>();
+  const form = useForm<{ name: string }>({
+    defaultValues: {
+      name: ""
+    }
+  });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit = async (data: { name: string }) => {
     const toastId = toast.loading("Tour Type Creating...")
     try {
       const res = await addTourType(data).unwrap();
-
       toast.dismiss(toastId);  // stop loading toast
-      if (res.success) toast.success("Tour Type Added")
-      setOpen(false);
+
+      if (res.success) {
+        form.reset()
+        toast.success("Tour Type Added")
+        setOpen(false);
+      }
     } catch (err: any) {
       toast.dismiss(toastId);
       const errMsg = err?.data?.message || "Something went wrong";
@@ -56,7 +63,6 @@ export function AddTourTypeModal() {
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value || ""}
                       placeholder="Tour Type Name"
                     />
                   </FormControl>
