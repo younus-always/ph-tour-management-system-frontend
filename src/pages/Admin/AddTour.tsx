@@ -46,6 +46,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import type { FileMetadata } from "@/hooks/use-file-upload";
 import { toast } from "sonner";
 import z from "zod";
+import { Navigate, useNavigate } from "react-router";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -69,6 +70,7 @@ const formSchema = z.object({
 const AddTour = () => {
   const [addTour] = useAddTourMutation();
   const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+  const navigate = useNavigate();
 
   const { data: tourTypeData, isLoading: tourTypeLoading } = useGetTourTypesQuery(undefined);
   const { data: divisionData, isLoading: divisionLoading } = useGetDivisionsQuery(undefined);
@@ -205,8 +207,9 @@ const AddTour = () => {
       toast.dismiss(toastId); // dismiss toast loading
 
       if (res.success) {
-        toast.success("Tour Created Successfully");
         form.reset();
+        toast.success("Tour Created Successfully");
+        navigate("/tours")
       }
     } catch (err: any) {
       toast.dismiss(toastId);
@@ -682,7 +685,7 @@ const AddTour = () => {
           </Form>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button type="submit" form="add-tour-form">
+          <Button type="submit" form="add-tour-form" className="cursor-pointer">
             Create Tour
           </Button>
         </CardFooter>

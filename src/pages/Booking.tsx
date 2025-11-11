@@ -1,6 +1,8 @@
+import Loader from "@/components/layout/Loader";
 import { Button } from "@/components/ui/button";
 import { useCreateBookingMutation } from "@/redux/features/booking/booking.api";
-import { useGetAllToursQuery } from "@/redux/features/tour/tour.api";
+import { useGetAllToursQuery, useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -9,13 +11,14 @@ export default function Booking() {
   const [guestCount, setGuestCount] = useState(1);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  console.log(totalAmount);
-
   const { id } = useParams();
   const { data, isLoading, isError } = useGetAllToursQuery({ _id: id });
   const [createBooking] = useCreateBookingMutation();
-
+  const { data: tourTypeData } = useGetTourTypesQuery(undefined);
   const tourData = data?.[0];
+  // get individual tour-type from tourData
+  const tourType = tourTypeData?.data.find((tourType) => tourType._id === tourData?.tourType);
+
 
   useEffect(() => {
     if (!isLoading && !isError) {
@@ -46,7 +49,7 @@ export default function Booking() {
   };
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (
@@ -77,18 +80,19 @@ export default function Booking() {
 
             <div>
               <h1 className="text-3xl font-bold mb-2">{tourData?.title}</h1>
-              <p className="text-gray-600 mb-4">{tourData?.description}</p>
+              <p className="text-gray-500 mb-4">{tourData?.description}</p>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <strong>Location:</strong> {tourData?.location}
                 </div>
                 <div>
-                  <strong>Duration:</strong> {tourData?.startDate} to{" "}
-                  {tourData?.endDate}
+                  <strong>Duration:</strong>{" "}
+                  {format(tourData?.startDate as string, "dd/MM/yyyy")} to{" "}
+                  {format(tourData?.endDate as string, "dd/MM/yyyy")}
                 </div>
                 <div>
-                  <strong>Tour Type:</strong> {tourData?.tourType}
+                  <strong>Tour Type:</strong> {tourType?.name}
                 </div>
                 <div>
                   <strong>Max Guests:</strong> {tourData?.maxGuest}
@@ -149,7 +153,7 @@ export default function Booking() {
                 <div className="border-t pt-4">
                   <div className="flex justify-between text-sm mb-2">
                     <span>Price per person:</span>
-                    <span>${tourData?.costFrom}</span>
+                    <span>৳{tourData?.costFrom}</span>
                   </div>
                   <div className="flex justify-between text-sm mb-2">
                     <span>Guests:</span>
@@ -157,7 +161,7 @@ export default function Booking() {
                   </div>
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total Amount:</span>
-                    <span>${totalAmount}</span>
+                    <span>৳{totalAmount}</span>
                   </div>
                 </div>
 

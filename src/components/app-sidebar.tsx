@@ -48,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between px-3 py-2">
         <Logo />
         <SidebarTrigger icon={<CircleChevronLeft />} size={"lg"} className="" />
       </div>
