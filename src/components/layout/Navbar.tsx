@@ -1,4 +1,5 @@
 import Logo from "@/assets/icons/Logo"
+import avatar from "@/assets/icons/avatar.png"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -31,11 +32,12 @@ import { ArrowRight } from "lucide-react"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home", role: "PUBLIC" },
-  { href: "/about", label: "About", role: "PUBLIC" },
-  { href: "/admin", label: "Dashboard", role: role.superAdmin },
-  { href: "/admin", label: "Dashboard", role: role.admin },
-  { href: "/user", label: "Dashboard", role: role.user }
+  { id: "1", href: "/", label: "Home", role: "PUBLIC" },
+  { id: "2", href: "/about", label: "About", role: "PUBLIC" },
+  { id: "3", href: "/tours", label: "Tours", role: "PUBLIC" },
+  { id: "4", href: "/admin", label: "Dashboard", role: role.superAdmin },
+  { id: "5", href: "/admin", label: "Dashboard", role: role.admin },
+  { id: "6", href: "/user", label: "Dashboard", role: role.user }
 ]
 
 export default function Navbar() {
@@ -92,10 +94,10 @@ export default function Navbar() {
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => (
-                    <>
+                  {navigationLinks.map((link) => (
+                    <div key={link.id} className="w-full">
                       {link.role === "PUBLIC" &&
-                        <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuItem className="w-full">
                           <NavigationMenuLink asChild className="py-1.5"
                           >
                             <Link to={link.href}>{link.label}</Link>
@@ -103,14 +105,14 @@ export default function Navbar() {
                         </NavigationMenuItem>
                       }
                       {link.role === userRole &&
-                        <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuItem className="w-full">
                           <NavigationMenuLink asChild className="py-1.5"
                           >
                             <Link to={link.href}>{link.label}</Link>
                           </NavigationMenuLink>
                         </NavigationMenuItem>
                       }
-                    </>
+                    </div>
                   ))}
                 </NavigationMenuList>
               </NavigationMenu>
@@ -122,10 +124,10 @@ export default function Navbar() {
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <>
+                {navigationLinks.map((link) => (
+                  <div key={link.id}>
                     {link.role === "PUBLIC" &&
-                      <NavigationMenuItem key={index} className="w-full">
+                      <NavigationMenuItem className="w-full">
                         <NavigationMenuLink asChild className="py-1.5"
                         >
                           <Link to={link.href}>{link.label}</Link>
@@ -133,14 +135,14 @@ export default function Navbar() {
                       </NavigationMenuItem>
                     }
                     {link.role === userRole &&
-                      <NavigationMenuItem key={index} className="w-full">
+                      <NavigationMenuItem className="w-full">
                         <NavigationMenuLink asChild className="py-1.5"
                         >
                           <Link to={link.href}>{link.label}</Link>
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                     }
-                  </>
+                  </div>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
@@ -160,7 +162,7 @@ export default function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="ring ring-transparent w-9 h-9 ring-offset-[3px] ring-offset-sidebar-ring">
-                  <AvatarImage src={picture ? picture : "https://github.com/shadcn.png"} alt={"photo"} />
+                  <AvatarImage src={picture || avatar} alt={"photo"} />
                   <AvatarFallback><span className="text-sm">profile</span></AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>

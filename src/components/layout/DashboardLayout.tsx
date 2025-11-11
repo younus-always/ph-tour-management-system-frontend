@@ -6,6 +6,8 @@ import {
       SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Outlet } from "react-router"
+import { ModeToggle } from "./ModeToggler"
+import { SearchForm } from "../search-form"
 
 const DashboardLayout = () => {
       return (
@@ -18,6 +20,10 @@ const DashboardLayout = () => {
                                     orientation="vertical"
                                     className="mr-2 data-[orientation=vertical]:h-4"
                               />
+                              <div className="w-full flex items-center justify-between">
+                                    <SearchForm />
+                                    <ModeToggle />
+                              </div>
                         </header>
                         <div className="flex flex-1 flex-col gap-4 p-4">
                               <Outlet />

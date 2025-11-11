@@ -1,3 +1,4 @@
+import Loader from "@/components/layout/Loader";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
 import type { TRole } from "@/types";
 import type { ComponentType } from "react";
@@ -9,6 +10,9 @@ export const withAuth = (Component: ComponentType, requiredRoles?: TRole | TRole
             const location = useLocation();
             const { email, role } = data?.data || {};
             //  const rolesArray = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
+
+            if (isLoading) return <Loader />
+
             if (!isLoading && !email) {
                   return <Navigate to="/login" state={location.pathname} />
             }

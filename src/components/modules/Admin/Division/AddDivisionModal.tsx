@@ -19,7 +19,7 @@ import { toast } from "sonner";
 
 
 const AddDivisionModal = () => {
-  const [addDivision] = useAddDivisionMutation();
+  const [addDivision, isLoading] = useAddDivisionMutation();
   const [image, setImage] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -40,8 +40,11 @@ const AddDivisionModal = () => {
       const res = await addDivision(formData).unwrap();
       toast.dismiss(toastId);  // stop loading toast
 
-      if (res.success) toast.success("Division Added");
-      setOpen(false)
+      if (res.success) {
+        form.reset()
+        toast.success("Division Added");
+        setOpen(false)
+      }
     } catch (err: any) {
       toast.dismiss(toastId);
       const errMsg = err.data.message || "Something went wrong";
@@ -53,7 +56,7 @@ const AddDivisionModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer">Add Division</Button>
+        <Button className="cursor-pointer">Create Division</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -107,6 +110,6 @@ const AddDivisionModal = () => {
       </DialogContent>
     </Dialog>
   )
-}
+};
 
 export default AddDivisionModal
