@@ -8,10 +8,11 @@ import { Link, useParams } from "react-router";
 export default function TourDetails() {
       const { slug } = useParams();
       const { data, isLoading } = useGetAllToursQuery({ slug: slug });
-      const { data: divisionData } = useGetDivisionsQuery(undefined);
+      const { data: divisionData } = useGetDivisionsQuery({ _id: data?.[0].division, fields: "name" }, { skip: !data });
       const tourData = data?.[0];
 
-      console.log(data);
+      console.log(tourData);
+      console.log(divisionData);
 
       if (isLoading) return <Loader />
 
@@ -72,7 +73,7 @@ export default function TourDetails() {
                                           <strong>Arrival:</strong> {tourData?.arrivalLocation}
                                     </p>
                                     <p>
-                                          <strong>Division:</strong> {divisionData?.data?.[0].name}
+                                          <strong>Division:</strong> {divisionData?.[0].name}
                                     </p>
                                     <p>
                                           <strong>Tour Type:</strong> {tourData?.tourType}

@@ -1,12 +1,13 @@
 "use client"
 
 import {
-      IconCreditCard,
-      IconDotsVertical,
-      IconLogout,
-      IconNotification,
-      IconUserCircle,
-} from "@tabler/icons-react"
+      BadgeCheck,
+      Bell,
+      ChevronsUpDown,
+      CreditCard,
+      LogOut,
+      Sparkles,
+} from "lucide-react"
 
 import {
       Avatar,
@@ -28,10 +29,6 @@ import {
       SidebarMenuItem,
       useSidebar,
 } from "@/components/ui/sidebar"
-import { authApi, useLogoutMutation } from "@/redux/features/auth/auth.api"
-import { useAppDispatch } from "@/redux/hook"
-import { Navigate, useLocation } from "react-router"
-import avatar from "@/assets/icons/avatar.png"
 
 export function NavUser({
       user,
@@ -39,23 +36,10 @@ export function NavUser({
       user: {
             name: string
             email: string
-            picture: string
+            avatar: string
       }
 }) {
       const { isMobile } = useSidebar()
-      const [logout] = useLogoutMutation();
-      const dispatch = useAppDispatch();
-      const location = useLocation();
-      const { email, name, picture } = user || {};
-
-      if (!email)
-            return <Navigate to={"/login"} state={location.pathname} />
-
-      const handleLogout = async () => {
-            await logout(undefined)
-            dispatch(authApi.util.resetApiState())
-      };
-
 
       return (
             <SidebarMenu>
@@ -66,17 +50,15 @@ export function NavUser({
                                           size="lg"
                                           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                     >
-                                          <Avatar className="h-8 w-8 rounded-lg grayscale">
-                                                <AvatarImage src={picture || avatar} alt={user.name} />
-                                                <AvatarFallback className="rounded-lg">Photo</AvatarFallback>
+                                          <Avatar className="h-8 w-8 rounded-lg">
+                                                <AvatarImage src={user.avatar} alt={user.name} />
+                                                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                                           </Avatar>
                                           <div className="grid flex-1 text-left text-sm leading-tight">
                                                 <span className="truncate font-medium">{user.name}</span>
-                                                <span className="text-muted-foreground truncate text-xs">
-                                                      {user.email}
-                                                </span>
+                                                <span className="truncate text-xs">{user.email}</span>
                                           </div>
-                                          <IconDotsVertical className="ml-auto size-4" />
+                                          <ChevronsUpDown className="ml-auto size-4" />
                                     </SidebarMenuButton>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent
@@ -88,35 +70,40 @@ export function NavUser({
                                     <DropdownMenuLabel className="p-0 font-normal">
                                           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                                 <Avatar className="h-8 w-8 rounded-lg">
-                                                      <AvatarImage src={picture || avatar} alt={name} />
+                                                      <AvatarImage src={user.avatar} alt={user.name} />
                                                       <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                                                 </Avatar>
                                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                                      <span className="truncate font-medium">{name}</span>
-                                                      <span className="text-muted-foreground truncate text-xs">
-                                                            {email}
-                                                      </span>
+                                                      <span className="truncate font-medium">{user.name}</span>
+                                                      <span className="truncate text-xs">{user.email}</span>
                                                 </div>
                                           </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
                                           <DropdownMenuItem>
-                                                <IconUserCircle />
+                                                <Sparkles />
+                                                Upgrade to Pro
+                                          </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                          <DropdownMenuItem>
+                                                <BadgeCheck />
                                                 Account
                                           </DropdownMenuItem>
                                           <DropdownMenuItem>
-                                                <IconCreditCard />
+                                                <CreditCard />
                                                 Billing
                                           </DropdownMenuItem>
                                           <DropdownMenuItem>
-                                                <IconNotification />
+                                                <Bell />
                                                 Notifications
                                           </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={handleLogout}>
-                                          <IconLogout />
+                                    <DropdownMenuItem>
+                                          <LogOut />
                                           Log out
                                     </DropdownMenuItem>
                               </DropdownMenuContent>

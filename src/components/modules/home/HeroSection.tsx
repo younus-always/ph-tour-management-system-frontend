@@ -8,7 +8,7 @@ export default function HeroSection() {
   const [selectedDivision, setSelectedDivision] = useState<string | undefined>(undefined);
   const { data: divisionData } = useGetDivisionsQuery(undefined);
 
-  const divisionOption = divisionData?.data.map((item: { _id: string, name: string }) => ({
+  const divisionOption = divisionData?.data?.map((item: { _id: string, name: string }) => ({
     label: item.name,
     value: item._id
   }));
